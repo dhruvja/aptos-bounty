@@ -1,0 +1,12 @@
+[package]
+name = 'bounty'
+version = '1.0.0'
+
+[addresses]
+AptosFramework = "0x1"
+Bounty = "baadc769c389e928c7bba499e5b504ec9e9eaaaa9bbbc592806640c0b05f7c4b"
+
+[dependencies.AptosFramework]
+git = 'https://github.com/aptos-labs/aptos-core.git'
+rev = 'devnet'
+subdir = 'aptos-move/framework/aptos-framework'
