@@ -32,6 +32,16 @@ module Bounty::bounty {
         resource_cap: account::SignerCapability
     }
 
+    struct Submission has key {
+        name: vector<u8>,
+        link_to_submission: vector<u8>,
+        wallet: address,
+        email: vector<u8>,
+        discord: vector<u8>,
+        twitter: vector<u8>,
+        anything_else: vector<u8>,
+    }
+
     // Errors
     const ERESOURCE_NOT_FOUND: u64 = 0;
     const EBOUNTY_NETWORK_NOT_CREATED: u64 = 1;
@@ -89,6 +99,27 @@ module Bounty::bounty {
         coin::transfer<CoinType>(&bounty_account_signer, bounty.creator, bounty.reward_amount); 
     }
 
+    public entry fun create_submission(
+        submitter: &signer, 
+        bounty_network_account: address,
+        bounty_account: address,
+        name: vector<u8>,
+        link_to_submission: vector<u8>,
+        email: vector<u8>,
+        discord: vector<u8>,
+        twitter: vector<u8>,
+        anything_else: vector<u8>){
+
+        assert!(exists<BountyNetwork>(bounty_network_account), EBOUNTY_NETWORK_NOT_CREATED);
+        assert!(exists<Bounty>(bounty_account), EBOUNTY_NOT_CREATED);
+
+        let (submission_resource, _submission_resource_cap) = account::create_resource_account(submitter, name);
+
+        let wallet = signer::address_of(submitter);
+        move_to(&submission_resource, Submission{name, link_to_submission, email, discord, twitter, anything_else, wallet});
+
+    }
+
     #[test_only]
     public fun get_resource_account(source: address, seed: vector<u8>): address {
         use std::hash;
@@ -135,7 +166,9 @@ module Bounty::bounty {
         assert!(bounty_account.status == REJECTED, EINVALID_STATUS);
         assert!(coin::balance<FakeCoin>(bob_addr) == 10000, EINVALID_BALANCE);
 
-
+        create_submission(&bob, bounty_network_addr, bounty_addr, b"first", b"https", b"a@a.com", b"abd234", b"adfs", b"asdfasfd");
+        let submit_addr = get_resource_account(bob_addr, b"first");
+        assert!(exists<Submission>(submit_addr), EBOUNTY_NOT_CREATED);
 
     }
 
