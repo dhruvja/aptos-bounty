@@ -6,8 +6,6 @@ This project is WIP.
 Currently users can
 - Initialize a bounty network
 - Create new bounties and transfer the reward amount to escrow 
-
-Features to come
 - Accept/deny the bounty 
 - Users can submit their work
-- Bounty creator can choose the winner and transfer the reward amount
+- Bounty creator can choose the winner and transfer the reward amount to the winner
